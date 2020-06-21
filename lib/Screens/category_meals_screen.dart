@@ -9,7 +9,7 @@ class CategoryMealsScreen extends StatelessWidget {
   CategoryMealsScreen(this.id, this.name); */
 
   static const routeName = "category-meals";
-
+  
   @override
   Widget build(BuildContext context) {
     final routeArgs =
@@ -28,6 +28,7 @@ class CategoryMealsScreen extends StatelessWidget {
       body: ListView.builder(
         itemBuilder: (ctx, index) {
           return MealItem(
+              id: categoryMeals[index].id,
               title: categoryMeals[index].title,
               duration: categoryMeals[index].duration,
               complexity: categoryMeals[index].complexity,
