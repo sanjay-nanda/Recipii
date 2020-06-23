@@ -1,41 +1,68 @@
 import 'package:flutter/material.dart';
+import 'package:meals/models/meal.dart';
 import '../Widgets/meal_item.dart';
 import '../dummy.dart';
 
-class CategoryMealsScreen extends StatelessWidget {
+class CategoryMealsScreen extends StatefulWidget {
   /*  final String id;
   final String name;
 
   CategoryMealsScreen(this.id, this.name); */
 
   static const routeName = "category-meals";
-  
+
   @override
-  Widget build(BuildContext context) {
+  _CategoryMealsScreenState createState() => _CategoryMealsScreenState();
+}
+
+class _CategoryMealsScreenState extends State<CategoryMealsScreen> {
+  String categoryTitle;
+  List<Meal> displayedMeals;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
     final routeArgs =
         ModalRoute.of(context).settings.arguments as Map<String, String>;
-    final String name = routeArgs['name'];
+    categoryTitle = routeArgs['name'];
     final String Id = routeArgs['id'];
-    final categoryMeals = DUMMY_MEALS.where(
+    displayedMeals = DUMMY_MEALS.where(
       (element) {
         return element.categories.contains(Id);
       },
     ).toList();
+    super.didChangeDependencies();
+  }
+
+  void _removeMeal(String mealID) {
+    setState(() {
+      displayedMeals.removeWhere((element) => element.id == mealID);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(name),
+        title: Text(categoryTitle),
       ),
       body: ListView.builder(
         itemBuilder: (ctx, index) {
           return MealItem(
-              id: categoryMeals[index].id,
-              title: categoryMeals[index].title,
-              duration: categoryMeals[index].duration,
-              complexity: categoryMeals[index].complexity,
-              affordability: categoryMeals[index].affordability,
-              imageUrl: categoryMeals[index].imageUrl);
+            id: displayedMeals[index].id,
+            title: displayedMeals[index].title,
+            duration: displayedMeals[index].duration,
+            complexity: displayedMeals[index].complexity,
+            affordability: displayedMeals[index].affordability,
+            imageUrl: displayedMeals[index].imageUrl,
+            removeItem: _removeMeal,
+          );
         },
-        itemCount: categoryMeals.length,
+        itemCount: displayedMeals.length,
       ),
     );
   }
